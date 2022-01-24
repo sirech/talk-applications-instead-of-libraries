@@ -12,7 +12,9 @@
 
 ---
 
-## Themes of this Presentation
+<h2 class="main">
+Themes of this Presentation
+</h2>
 
 <h3 class="fragment fade-up">
 How to distribute front end applications
