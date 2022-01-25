@@ -13,19 +13,19 @@
 ---
 
 <h2 class="main">
-Themes of this Presentation
+Themes
 </h2>
 
 <h3 class="fragment fade-up">
-How to distribute front end applications
+Distributing front end applications
 </h3>
 
 <h3 class="fragment fade-up">
-Bringing module federation to production
+Adopting module federation
 </h3>
 
 <h3 class="fragment fade-up">
-Scaling our solution
+Making it production-ready
 </h3>
 
 ---
@@ -40,7 +40,7 @@ Scaling our solution
 
 ---
 
-picture of partner home
+<!-- .slide: data-background-image="images/partner-home.png" data-background-size="auto 100%" -->
 
 ---
 
@@ -59,7 +59,7 @@ picture of technologies (React)
 
 ---
 
-# A Challenge
+# Facing a Challenge
 
 ---
 
@@ -71,7 +71,7 @@ picture of technologies (React)
 
 ---
 
-picture of the navigation
+<!-- .slide: data-background-image="images/navigation.png" data-background-size="100% auto" -->
 
 ---
 
@@ -88,14 +88,16 @@ picture of library being imported
 
 ---
 
-## Challenges
+<h2 class="main">
+Challenges
+</h2>
 
 <h3 class="fragment fade-up">
-Consistency
+Propagating updates
 </h3>
 
 <h3 class="fragment fade-up">
-Rolling updates
+Consistency
 </h3>
 
 <h3 class="fragment fade-up">
@@ -117,7 +119,9 @@ picture of different micro front end strategies
 
 ---
 
-link to previous talk
+## Plenty of ways to implement micro frontends
+
+<span class="bottom-right"><a href="https://www.youtube.com/watch?v=Wly6KseqABE">youtube.com/watch?v=Wly6KseqABE</a></span>
 
 ---
 
@@ -149,13 +153,17 @@ link to previous talk
 
 ---
 
-picture remote application
+TODO: is there a picture missing here?
 
 ---
 
 <!-- .slide: data-background-color="var(--r-main-color)"  -->
 
 # Making an Application Remote
+
+---
+
+<!-- .slide: data-background-image="images/only-remote.png" data-background-size="auto 100%" -->
 
 ---
 
@@ -169,6 +177,8 @@ code snippet exporting
 
 ## With great power ...
 
+TODO: what do I want to say here
+
 ---
 
 <!-- .slide: data-background-color="var(--r-main-color)"  -->
@@ -177,7 +187,7 @@ code snippet exporting
 
 ---
 
-picture: application loading remote
+<!-- .slide: data-background-image="images/remote-application.png" data-background-size="auto 100%" -->
 
 ---
 
@@ -194,7 +204,7 @@ snippet: focus url
 
 ---
 
-## A more flexible loading
+## More flexible loading
 
 ---
 
@@ -251,7 +261,10 @@ code snippet: shared provider
 
 ---
 
-## X-Cutting concerns
+<h2 class="main">
+X-Cutting concerns
+</h2>
+
 ### Logging
 ### Monitoring
 ### i18n
@@ -263,7 +276,7 @@ code snippet: shared provider
 
 ---
 
-picture configurable remote
+<!-- .slide: data-background-image="images/configurable-remote.png" data-background-size="auto 100%" -->
 
 ---
 
@@ -289,7 +302,7 @@ code snippet boundaries
 
 ---
 
-picture: the testing trophy
+<!-- .slide: data-background-image="images/trophy.jpeg" data-background-size="auto 100%" -->
 
 ---
 
@@ -301,7 +314,7 @@ code snippet: end 2 end tests
 
 ---
 
-picture: application host itselfs
+<!-- .slide: data-background-image="images/remote-application-local.webp" data-background-size="auto 100%" -->
 
 ---
 
@@ -320,7 +333,7 @@ picture: application host itselfs
 
 ---
 
-picture: DD synthetic
+<!-- .slide: data-background-image="images/synthetic.png" data-background-size="auto 100%" -->
 
 ---
 
@@ -352,7 +365,7 @@ code snippet: registry
 
 ---
 
-picture: DDD
+<!-- .slide: data-background-image="images/ddd.jpeg" data-background-size="auto 100%" -->
 
 ---
 
