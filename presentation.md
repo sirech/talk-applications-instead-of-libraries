@@ -2,6 +2,11 @@
 
 # Applications instead of Libraries
 
+???
+
+- the name of this talk is applications instead of libraries
+- this is how I named the internal document that described our approach based on micro frontends. I'll explain what I mean throughout the talk
+
 ---
 
 ## Mario Fernandez
@@ -9,6 +14,8 @@
  Wayfair
  
 ???
+
+- I'm an engineer at Wayfair
 
 ---
 
@@ -28,34 +35,61 @@ Adopting module federation
 Making it production-ready
 </h3>
 
+???
+
+- There are three themes I want to cover
+
+- First I want to talk about our challenges distributing frontend apps, and how we arrived to the micro frontends approach
+- Then I want to talk about module federation, the system we have picked to build our architecture
+- Lastly, I want to talk about taking this approach past the MVP phase and bringing it to production
+
 ---
 
 <!-- .slide: data-background-color="var(--r-main-color)"  -->
 
-# The Beginnings
+# A Humble Beginning
 
 ---
 
-# A Bit of  Context
+# What Are We Building?
 
 ---
 
 <!-- .slide: data-background-image="images/partner-home.png" data-background-size="auto 100%" -->
 
----
+???
 
-picture of transition diagraam, with monolith, then decoupled applications
-
+- This is Partner Home
+- This is the portal that suppliers use in Wayfair to upload their wares, track inventory, logistics, and so on
+- It's less visible than the storefront, but it's nevertheless really important for the health of the business
 ---
 
 ## Rough numbers
 
-### ~100 applications
+### ~100 flows
 ### ~30 experience teams
+
+???
+
+- It's a pretty significant piece of software, with a lot of teams involved
 
 ---
 
-picture of technologies (React)
+<!-- .slide: data-background-image="images/decoupling.png" data-background-size="100% auto" -->
+
+???
+
+- This application started as a monolith written in PHP. Due to the lack of visibility, it has been historically a bit underinvested
+- This has changed in the last two years, and we're moving to an architecture based on decoupled services
+
+---
+
+## Based on React
+
+???
+
+- In terms of technology, we rely mostly on React, which a bunch of other techs involved
+- This is relevant, as any solution we could think of could assume that everybody would be using React
 
 ---
 
@@ -69,9 +103,22 @@ picture of technologies (React)
 
 ## How to distribute front end applications?
 
+???
+
+- I just mentioned decoupled applications, so you can say: Distribute them individually
+
+---
+
+## What about shared concerns?
+
 ---
 
 <!-- .slide: data-background-image="images/navigation.png" data-background-size="100% auto" -->
+
+???
+
+- let's say, a navigation bar
+- it's present in almost every page
 
 ---
 
@@ -80,11 +127,15 @@ picture of technologies (React)
 
 ---
 
-picture of library being imported
+<!-- .slide: data-background-image="images/library.png" data-background-size="auto 100%" -->
 
 ---
 
 ## You can guess that it didn't quite work
+
+???
+
+- you can guess that the fact that I'm giving a talk about this implies that this approach didn't work
 
 ---
 
@@ -104,6 +155,10 @@ Consistency
 Operability
 </h3>
 
+???
+
+- But why?
+
 ---
 
 ## Attempt 2️⃣
@@ -111,11 +166,20 @@ Operability
 
 ---
 
-picture of navigation as a micro front end
+picture of navigation as a micro frontend
 
 ---
 
-picture of different micro front end strategies
+<!-- .slide: data-background-image="images/tweet.png" data-background-size="90% auto" -->
+
+???
+
+- by law, every time you mention micro frontends in a talk you have to show this tweet
+- so yeah, micro frontends don't fix every issue, but they are really useful in the right context
+
+---
+
+picture of different micro frontend strategies
 
 ---
 
@@ -167,7 +231,29 @@ TODO: is there a picture missing here?
 
 ---
 
-code snippet exporting
+```js [|2|4-6]
+new ModuleFederationPlugin({
+  name: 'remote',
+  filename: 'remoteEntry.js',
+  exposes: {
+    './Welcome': './src/Welcome',
+  },
+  shared: [
+    {
+      react: { requiredVersion: deps.react, singleton: true },
+      'react-dom': { requiredVersion: deps['react-dom'], singleton: true },
+      '@applications-instead-of-libraries/shared-library': {
+        import: '@applications-instead-of-libraries/shared-library',
+        requiredVersion: require('../shared-library/package.json').version,
+      },
+      '@material-ui/core': {
+        requiredVersion: deps['@material-ui/core'],
+        singleton: true,
+      },
+    },
+  ],
+})
+```
 
 ---
 
@@ -191,7 +277,28 @@ TODO: what do I want to say here
 
 ---
 
-code snippet import
+```js [|3-5]
+new ModuleFederationPlugin({
+  name: 'host',
+  remotes: {
+    remote: 'remote@http://localhost:3002/remoteEntry.js',
+  },
+  shared: [
+    {
+      react: { requiredVersion: deps.react, singleton: true },
+      'react-dom': { requiredVersion: deps['react-dom'], singleton: true },
+      '@applications-instead-of-libraries/shared-library': {
+        import: '@applications-instead-of-libraries/shared-library',
+        requiredVersion: require('../shared-library/package.json').version,
+      },
+      '@material-ui/core': {
+        requiredVersion: deps['@material-ui/core'],
+        singleton: true,
+      },
+    },
+  ],
+})
+```
 
 ---
 
@@ -200,7 +307,13 @@ code snippet import
 
 ---
 
-snippet: focus url
+```js
+{
+  remotes: {
+    remote: 'remote@http://localhost:3002/remoteEntry.js',
+  }
+}
+```
 
 ---
 
@@ -209,6 +322,7 @@ snippet: focus url
 ---
 
 code snippet: RemoteComponent
+TODO: can I do a snippet or maybe better a pic?
 
 ---
 
@@ -222,7 +336,24 @@ picture: loading single component
 
 ---
 
-snippet shared dependencies
+```js [|4]
+{
+  shared: [
+    {
+      react: { requiredVersion: deps.react, singleton: true },
+      'react-dom': { requiredVersion: deps['react-dom'], singleton: true },
+      '@applications-instead-of-libraries/shared-library': {
+        import: '@applications-instead-of-libraries/shared-library',
+        requiredVersion: require('../shared-library/package.json').version,
+      },
+      '@material-ui/core': {
+        requiredVersion: deps['@material-ui/core'],
+        singleton: true,
+      },
+    },
+  ],
+}
+```
 
 ---
 
@@ -249,7 +380,23 @@ snippet shared dependencies
 
 ---
 
-code snippet: internal context
+```js [|1-2|6]
+const Context = createContext('')
+export const useContext = () => React.useContext(Context)
+
+const WelcomeFrame = () => {
+  return (
+    <Context.Provider value="[private]">
+      <Card variant="outlined">
+        <CardHeader title="WelcomeFrame"></CardHeader>
+        <CardContent>
+          <Welcome />
+        </CardContent>
+      </Card>
+    </Context.Provider>
+  )
+}
+```
 
 ---
 
@@ -257,7 +404,24 @@ code snippet: internal context
 
 ---
 
-code snippet: shared provider
+```jsx [|3]
+const HostApplication = () => {
+  return (
+    <LanguageProvider value="de-DE">
+      <Box p={1}>
+        <RemoteComponent
+          component="WelcomeFrame"
+          delayed={<>Loading...</>}
+        />
+      </Box>
+    </LanguageProvider>
+  )
+}
+```
+
+---
+
+TODO: more context provider
 
 ---
 
@@ -302,7 +466,7 @@ code snippet boundaries
 
 ---
 
-<!-- .slide: data-background-image="images/trophy.jpeg" data-background-size="auto 100%" -->
+<!-- .slide: data-background-image="images/trophy.jpeg" data-background-size="auto 80%" -->
 
 ---
 
@@ -310,11 +474,22 @@ code snippet boundaries
 
 ---
 
-code snippet: end 2 end tests
+<!-- .slide: data-background-image="images/remote-application-local.webp" data-background-size="auto 100%" -->
 
 ---
 
-<!-- .slide: data-background-image="images/remote-application-local.webp" data-background-size="auto 100%" -->
+```js
+context('Integrated Application', () => {
+  beforeEach(() => {})
+
+  it('shows the integrated remote component', () => {
+    cy.visit('http://localhost:3001')
+
+    cy.contains('Host Application').should('exist')
+    cy.contains('The selected locale is de-DE').should('exist')
+  })
+})
+```
 
 ---
 
@@ -331,9 +506,13 @@ code snippet: end 2 end tests
 
 ## A micro frontend is a live application
 
+<h3 class="fragment fade-up danger">
+A micro frontend is a live application
+</h3>
+
 ---
 
-<!-- .slide: data-background-image="images/synthetic.png" data-background-size="auto 100%" -->
+<!-- .slide: data-background-image="images/synthetic.png" data-background-size="90% auto" -->
 
 ---
 
@@ -344,6 +523,10 @@ code snippet: end 2 end tests
 ---
 
 ## What if you have multiple remote applications?
+
+---
+
+TODO: re-use abstractions
 
 ---
 
@@ -365,7 +548,7 @@ code snippet: registry
 
 ---
 
-<!-- .slide: data-background-image="images/ddd.jpeg" data-background-size="auto 100%" -->
+<!-- .slide: data-background-image="images/ddd.jpeg" data-background-size="auto 80%" -->
 
 ---
 
@@ -381,9 +564,14 @@ code snippet: registry
 
 TODO
 
+- There are clear advantages, such as isolation
+- There are significant challenges
+
 ---
 
-links
+#### medium.com/swlh/webpack-5-module-federation-a-game-changer-to-javascript-architecture-bcdd30e02669
+#### aboutwayfair.com/careers/tech-blog/applications-instead-of-libraries-part-2
+#### github.com/sirech/example-applications-instead-of-libraries
 
 ---
 
