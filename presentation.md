@@ -1,21 +1,25 @@
 <!-- .slide: data-background-color="var(--r-main-color)"  -->
 
 # Applications instead of Libraries
+## Micro Frontends with Module Federation
 
 ???
 
 - the name of this talk is applications instead of libraries
-- this is how I named the internal document that described our approach based on micro frontends. I'll explain what I mean throughout the talk
+- this is how I named the internal document that started this whole affair. I will explain what I mean throughout the talk. As a sneak preview, this is about leveraging micro frontends
 
 ---
 
 ## Mario Fernandez
- 
- Wayfair
+
+<h3 class="main">
+Wayfair
+</h2>
  
 ???
 
 - I'm an engineer at Wayfair
+- In case you don't know, Wayfair is an online retailer that sells furniture
 
 ---
 
@@ -55,13 +59,17 @@ Making it production-ready
 
 ---
 
+## Partner Home @ Wayfair
+
+---
+
 <!-- .slide: data-background-image="images/partner-home.png" data-background-size="auto 100%" -->
 
 ???
 
 - This is Partner Home
 - This is the portal that suppliers use in Wayfair to upload their wares, track inventory, logistics, and so on
-- It's less visible than the storefront, but it's nevertheless really important for the health of the business
+- It's less visible than the store that most of our users experience. It's nevertheless really important for the health of the business
 ---
 
 ## Rough numbers
@@ -75,16 +83,16 @@ Making it production-ready
 
 ---
 
-<!-- .slide: data-background-image="images/decoupling.png" data-background-size="100% auto" -->
+<!-- .slide: data-background-image="images/decoupling.png" data-background-size="90% auto" -->
 
 ???
 
-- This application started as a monolith written in PHP. Due to the lack of visibility, it has been historically a bit underinvested
-- This has changed in the last two years, and we're moving to an architecture based on decoupled services
+- This application started, as it often does, as a monolith written in PHP. 
+- Things have changed in the last two years, and we're moving to an architecture based on decoupled services
 
 ---
 
-## Based on React
+<!-- .slide: data-background-image="images/react.jpeg" data-background-size="50% auto" -->
 
 ???
 
@@ -94,6 +102,10 @@ Making it production-ready
 ---
 
 # Facing a Challenge
+
+???
+
+- Enough about context. Let's talk about the problems we faced
 
 ---
 
@@ -105,11 +117,16 @@ Making it production-ready
 
 ???
 
+- What does this even mean? Bear with me for a bit
 - I just mentioned decoupled applications, so you can say: Distribute them individually
 
 ---
 
 ## What about shared concerns?
+
+???
+
+- this makes even less sense than the question before. Let me show you a picture
 
 ---
 
@@ -119,6 +136,7 @@ Making it production-ready
 
 - let's say, a navigation bar
 - it's present in almost every page
+- in a decoupled application architecture, you have to make sure that every individual app renders it
 
 ---
 
@@ -131,7 +149,7 @@ Making it production-ready
 
 ---
 
-## You can guess that it didn't quite work
+## You can guess it didn't work for us
 
 ???
 
@@ -164,28 +182,41 @@ Operability
 ## Attempt 2️⃣
 ### Applications instead of libraries
 
+???
+
+- our approach is to treat these concerns as live applications, with all the consequences
+
 ---
 
-picture of navigation as a micro frontend
+## A different paradigm
 
----
-
-<!-- .slide: data-background-image="images/tweet.png" data-background-size="90% auto" -->
+### Independently deployed applications
+### Integrated as a cohesive whole
 
 ???
 
-- by law, every time you mention micro frontends in a talk you have to show this tweet
-- so yeah, micro frontends don't fix every issue, but they are really useful in the right context
+- clear ownership
+- the devil is in the details
 
 ---
 
-picture of different micro frontend strategies
+<!-- .slide: data-background-image="images/verticals.png" data-background-size="80% auto" -->
 
 ---
 
 ## Plenty of ways to implement micro frontends
 
-<span class="bottom-right"><a href="https://www.youtube.com/watch?v=Wly6KseqABE">youtube.com/watch?v=Wly6KseqABE</a></span>
+<span class="bottom-right">
+The one right way to do microfrontends - two opinions
+<a href="https://www.youtube.com/watch?v=Wly6KseqABE">youtube.com/watch?v=Wly6KseqABE</a>
+</span>
+
+???
+
+- build time integration
+- Server side integration
+- runtime composition in the front end
+- many options, worthy of its own talk. I did one some time way, in case your curious
 
 ---
 
@@ -199,7 +230,7 @@ picture of different micro frontend strategies
 
 ---
 
-## Load modules remotely
+## Load modules remotely at runtime
 
 ---
 
@@ -217,17 +248,22 @@ picture of different micro frontend strategies
 
 ---
 
-TODO: is there a picture missing here?
-
----
-
 <!-- .slide: data-background-color="var(--r-main-color)"  -->
 
 # Making an Application Remote
 
+???
+
+- thus far, we kept it high-level
+- we're about to go on a deep dive on how to put this to practice
+
 ---
 
 <!-- .slide: data-background-image="images/only-remote.png" data-background-size="auto 100%" -->
+
+???
+
+- what's our goal: Having an application, the remote, that can be consumed by other applications
 
 ---
 
@@ -255,6 +291,12 @@ new ModuleFederationPlugin({
 })
 ```
 
+???
+
+- we do this through webpack. That means that you have get into the weeds with webpack configurations
+- the good thing is that we don't have to change the way we build our application
+- given that we use React, our quantum of sharing are components
+
 ---
 
 ## That's it? 🤔
@@ -263,7 +305,10 @@ new ModuleFederationPlugin({
 
 ## With great power ...
 
-TODO: what do I want to say here
+???
+
+- just because you can, doesn't mean you need to expose any component
+
 
 ---
 
@@ -302,6 +347,25 @@ new ModuleFederationPlugin({
 
 ---
 
+```js [|9-11]
+export default class LazyModule extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = { error: null }
+  }
+
+  render() {
+    return (
+      <React.Suspense fallback={this.props.delayed ?? null}>
+        {this.props.children}
+      </React.Suspense>
+    )
+  }
+}
+```
+
+---
+
 ## A problem
 ### Dynamic loading
 
@@ -321,12 +385,47 @@ new ModuleFederationPlugin({
 
 ---
 
-code snippet: RemoteComponent
-TODO: can I do a snippet or maybe better a pic?
+```js
+const RemoteComponent = ({component, error, delayed, environment, ...props}) => {
+  const RemoteComponentLoader = useMemo(
+    () => loadRemoteComponent({ component, environment }),
+    [component, environment]
+  )
+
+  const RemoteObject = useMemo(
+    () => React.lazy(RemoteComponentLoader),
+    [RemoteComponentLoader]
+  )
+
+  return (
+    <LazyModule error={error} delayed={delayed}>
+      <RemoteObject {...props} />
+    </LazyModule>
+  )
+}
+
+export default RemoteComponent
+```
 
 ---
 
-picture: loading single component
+```js
+export function remoteUrl({ environment = 'DEV', origin } = {}) {
+  // This function offers the possibility of loading components from different urls.
+  // For instance, you can use a staging system, or the production url.
+  //
+  // In this case, all the urls point to the localhost as this app is not deployed to a CDN
+  if (typeof origin === 'string') {
+    return `${origin}/remoteEntry.js`
+  }
+
+  if (environment === 'PROD') {
+    return `http://localhost:3002/remoteEntry.js?${new Date().getTime()}`
+  }
+
+  return `http://localhost:3002/remoteEntry.js?${new Date().getTime()}`
+}
+```
 
 ---
 
@@ -365,7 +464,7 @@ picture: loading single component
 
 ---
 
-(maybe?) dependency resolution in module federation
+## Loading multiple versions of the same library can be problematic
 
 ---
 
@@ -421,7 +520,7 @@ const HostApplication = () => {
 
 ---
 
-TODO: more context provider
+<!-- .slide: data-background-image="images/shared-provider.png" data-background-size="auto 90%" -->
 
 ---
 
@@ -451,6 +550,10 @@ X-Cutting concerns
 <!-- .slide: data-background-color="var(--r-main-color)"  -->
 
 # Production Ready
+
+---
+
+<!-- .slide: data-background-image="images/borat.png" data-background-size="90% auto" -->
 
 ---
 
@@ -512,7 +615,7 @@ A micro frontend is a live application
 
 ---
 
-<!-- .slide: data-background-image="images/synthetic.png" data-background-size="90% auto" -->
+<!-- .slide: data-background-image="images/synthetic.png" data-background-size="80% auto" -->
 
 ---
 
@@ -522,11 +625,11 @@ A micro frontend is a live application
 
 ---
 
-## What if you have multiple remote applications?
+TODO: re-use abstractions
 
 ---
 
-TODO: re-use abstractions
+## What if you have multiple remote applications?
 
 ---
 
@@ -545,6 +648,10 @@ code snippet: registry
 ---
 
 ## It depends!
+
+---
+
+TODO: jeff goldblum just because you can picture
 
 ---
 
@@ -569,11 +676,18 @@ TODO
 
 ---
 
+<!-- .slide: data-background-image="images/tweet.png" data-background-size="90% auto" -->
+
+???
+
+- by law, every time you mention micro frontends in a talk you have to show this tweet
+- the point is that micro frontends are a useful tool, but they are not a silver bullet
+
+---
+
 #### medium.com/swlh/webpack-5-module-federation-a-game-changer-to-javascript-architecture-bcdd30e02669
 #### aboutwayfair.com/careers/tech-blog/applications-instead-of-libraries-part-2
 #### github.com/sirech/example-applications-instead-of-libraries
 
 ---
-
-
 
