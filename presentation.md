@@ -561,7 +561,56 @@ X-Cutting concerns
 
 ---
 
-code snippet boundaries
+```js
+export default class LazyModule extends React.Component {
+  static getDerivedStateFromError(error) {
+    return { error }
+  }
+
+  constructor(props) {
+    super(props)
+    this.state = { error: null }
+  }
+
+  componentDidCatch(_error, errorInfo) {
+    // eslint-disable-next-line no-console
+    console.error('LazyModule failed while loading remote module', errorInfo)
+
+    if (this.props.logger) {
+      this.props.logger.error({
+        message: 'LazyModule failed while loading remote module',
+        data: errorInfo,
+      })
+    }
+  }
+}
+```
+
+---
+
+```js
+export default class LazyModule extends React.Component {
+  render() {
+    if (this.state.error !== null) {
+      const errorFallback = this.props.error
+
+      if (React.isValidElement(errorFallback)) {
+        return errorFallback
+      } else if (typeof errorFallback === 'function') {
+        return errorFallback({ error: this.state.error })
+      } else {
+        return null
+      }
+    }
+
+    return (
+      <React.Suspense fallback={this.props.delayed ?? null}>
+        {this.props.children}
+      </React.Suspense>
+    )
+  }
+}
+```
 
 ---
 
@@ -625,7 +674,7 @@ A micro frontend is a live application
 
 ---
 
-TODO: re-use abstractions
+<!-- .slide: data-background-image="images/scaling-up.png" data-background-size="80% auto" -->
 
 ---
 
@@ -633,7 +682,24 @@ TODO: re-use abstractions
 
 ---
 
-code snippet: registry
+```js
+const RemoteContainerProvider = ({
+  environment,
+  origins,
+  children,
+}: RemoteContainerProviderProps) => {
+  const remoteContainerRegistry = useRemoteContainerRegistry({
+    environment,
+    origins,
+  });
+
+  return (
+    <RemoteContainerContext.Provider value={remoteContainerRegistry}>
+      {children}
+    </RemoteContainerContext.Provider>
+  );
+};
+```
 
 ---
 
@@ -651,7 +717,7 @@ code snippet: registry
 
 ---
 
-TODO: jeff goldblum just because you can picture
+<!-- .slide: data-background-image="images/goldblum-meme.jpeg" data-background-size="auto 100%" -->
 
 ---
 
@@ -669,10 +735,13 @@ TODO: jeff goldblum just because you can picture
 
 ---
 
-TODO
+## Clear advantages
+### Isolation
+### Quick path to production
 
-- There are clear advantages, such as isolation
-- There are significant challenges
+---
+
+## There are challenges as well!
 
 ---
 
