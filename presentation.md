@@ -301,14 +301,9 @@ new ModuleFederationPlugin({
 
 ## That's it? 🤔
 
----
-
-## With great power ...
-
 ???
 
-- just because you can, doesn't mean you need to expose any component
-
+- This is enough to expose a module, but there's more behind making an application remote
 
 ---
 
@@ -407,25 +402,11 @@ const RemoteComponent = ({component, error, delayed, environment, ...props}) => 
 export default RemoteComponent
 ```
 
----
+???
 
-```js
-export function remoteUrl({ environment = 'DEV', origin } = {}) {
-  // This function offers the possibility of loading components from different urls.
-  // For instance, you can use a staging system, or the production url.
-  //
-  // In this case, all the urls point to the localhost as this app is not deployed to a CDN
-  if (typeof origin === 'string') {
-    return `${origin}/remoteEntry.js`
-  }
-
-  if (environment === 'PROD') {
-    return `http://localhost:3002/remoteEntry.js?${new Date().getTime()}`
-  }
-
-  return `http://localhost:3002/remoteEntry.js?${new Date().getTime()}`
-}
-```
+- we have built a remote component, an abstraction to load any component
+- crucially, it's smart enough to load from different sources based on configuration
+- This is a very simplified slide, as the whole thing is quite big. But, you build it once and you can reuse it
 
 ---
 
@@ -458,13 +439,14 @@ export function remoteUrl({ environment = 'DEV', origin } = {}) {
 
 ## You don't want to download React multiple times
 
+???
+
+- it's not just an efficiency thing
+- certain libraries don't work well if you import multiple versions of them
+
 ---
 
 ## You don't want strong coupling, either
-
----
-
-## Loading multiple versions of the same library can be problematic
 
 ---
 
@@ -531,19 +513,6 @@ X-Cutting concerns
 ### Logging
 ### Monitoring
 ### i18n
-
----
-
-## A funky experiment
-### Configurable remote applications
-
----
-
-<!-- .slide: data-background-image="images/configurable-remote.png" data-background-size="auto 100%" -->
-
----
-
-## 🧱🚧🏗️☢️🧯💥
 
 ---
 
