@@ -122,6 +122,10 @@ Making it production-ready
 
 ---
 
+<!-- .slide: data-background-image="images/decoupling.png" data-background-size="90% auto" -->
+
+---
+
 ## What about shared concerns?
 
 ???
@@ -153,7 +157,7 @@ Making it production-ready
 
 ???
 
-- you can guess that the fact that I'm giving a talk about this implies that this approach didn't work
+- I'm sitting here giving a talk about it, so it's a safe bet to assume this approach didn't work
 
 ---
 
@@ -175,7 +179,7 @@ Operability
 
 ???
 
-- But why?
+- But why is that?
 
 ---
 
@@ -201,6 +205,10 @@ Operability
 ---
 
 <!-- .slide: data-background-image="images/verticals.png" data-background-size="80% auto" -->
+
+???
+
+- a vertical domain split fits better the boundaries of our team
 
 ---
 
@@ -687,6 +695,10 @@ const RemoteContainerProvider = ({
 ---
 
 <!-- .slide: data-background-image="images/goldblum-meme.jpeg" data-background-size="auto 100%" -->
+
+---
+
+> Micro frontends are not about technology, they are about organizational structure
 
 ---
 
