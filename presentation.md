@@ -11,15 +11,8 @@
 ---
 
 ## Mario Fernandez
-
-<h3 class="main">
-Wayfair
-</h2>
  
 ???
-
-- I'm an engineer at Wayfair
-- In case you don't know, Wayfair is an online retailer that sells furniture
 
 ---
 
@@ -55,11 +48,16 @@ Making it production-ready
 
 ---
 
-# What Are We Building?
+# What Is This About?
 
 ---
 
 ## Partner Home @ Wayfair
+
+???
+
+- This talks is mainly based on the work I did while at Wayfair, although I no longer work there
+- WF is an online furniture retailer
 
 ---
 
@@ -88,7 +86,7 @@ Making it production-ready
 ???
 
 - This application started, as it often does, as a monolith written in PHP. 
-- Things have changed in the last two years, and we're moving to an architecture based on decoupled services
+- Things have changed in the last two years, and it's moving to an architecture based on decoupled services
 
 ---
 
@@ -96,7 +94,7 @@ Making it production-ready
 
 ???
 
-- In terms of technology, we rely mostly on React, which a bunch of other techs involved
+- In terms of technology, it relies mostly on React, which a bunch of other techs involved
 - This is relevant, as any solution we could think of could assume that everybody would be using React
 
 ---
@@ -105,7 +103,7 @@ Making it production-ready
 
 ???
 
-- Enough about context. Let's talk about the problems we faced
+- Enough about context. Let's talk about the problems
 
 ---
 
@@ -153,7 +151,7 @@ Making it production-ready
 
 ---
 
-## You can guess it didn't work for us
+## You can guess it didn't work
 
 ???
 
@@ -208,7 +206,8 @@ Operability
 
 ???
 
-- a vertical domain split fits better the boundaries of our team
+- another way to see it is focusing on vertical domains
+- a vertical domain split fits better the boundaries of the team I was on
 
 ---
 
@@ -224,17 +223,21 @@ The one right way to do microfrontends - two opinions
 - build time integration
 - Server side integration
 - runtime composition in the front end
-- many options, worthy of its own talk. I did one some time way, in case your curious
+- many options, worthy of its own talk. I did one some time way, in case you're curious
 
 ---
 
-## Let's talk about our implementation
+## Let's talk about _our_ implementation
 
 ---
 
 <!-- .slide: data-background-color="var(--r-main-color)"  -->
 
 # What is module federation?
+
+???
+
+- 25%
 
 ---
 
@@ -271,7 +274,7 @@ The one right way to do microfrontends - two opinions
 
 ???
 
-- what's our goal: Having an application, the remote, that can be consumed by other applications
+- what's our goal: Having an application, the remote, that can be integrated by other applications
 
 ---
 
@@ -350,6 +353,10 @@ new ModuleFederationPlugin({
 
 ---
 
+```js
+const OtherComponent = React.lazy(() => import('remote/OtherComponent'));
+```
+
 ```js [|9-11]
 export default class LazyModule extends React.Component {
   constructor(props) {
@@ -360,12 +367,14 @@ export default class LazyModule extends React.Component {
   render() {
     return (
       <React.Suspense fallback={this.props.delayed ?? null}>
-        {this.props.children}
+        <OtherComponent />
       </React.Suspense>
     )
   }
 }
 ```
+
+???
 
 ---
 
@@ -381,6 +390,10 @@ export default class LazyModule extends React.Component {
   }
 }
 ```
+
+???
+
+- If we're practicing CI, we'll have more than one environment. Being stuck with one limits our ability to test changes before they reach production
 
 ---
 
@@ -422,6 +435,25 @@ export default RemoteComponent
 
 # Shared Dependencies
 
+???
+
+- 50%
+- Shared dependencies are one of the classical issues when doing micro frontends. 
+- Do you want to have complete independence for the different applications, or do you want to add coupling?
+
+---
+
+## You don't want to download React multiple times
+
+???
+
+- it's not just an efficiency thing
+- certain libraries don't work well if you import multiple versions of them
+
+---
+
+## You don't want strong coupling, either
+
 ---
 
 ```js [|4]
@@ -445,19 +477,6 @@ export default RemoteComponent
 
 ---
 
-## You don't want to download React multiple times
-
-???
-
-- it's not just an efficiency thing
-- certain libraries don't work well if you import multiple versions of them
-
----
-
-## You don't want strong coupling, either
-
----
-
 <!-- .slide: data-background-color="var(--r-main-color)"  -->
 
 # Beyond Single Components
@@ -465,7 +484,6 @@ export default RemoteComponent
 ---
 
 ## Keeping internal state private
-
 
 ---
 
@@ -486,6 +504,11 @@ const WelcomeFrame = () => {
   )
 }
 ```
+
+???
+
+- The Context API works well in combination with smaller, remote applications
+- I would 
 
 ---
 
@@ -683,6 +706,10 @@ const RemoteContainerProvider = ({
 <!-- .slide: data-background-color="var(--r-main-color)"  -->
 
 # Encouraging Adoption
+
+???
+
+- 85%
 
 ---
 
