@@ -44,11 +44,7 @@ Making it production-ready
 
 <!-- .slide: data-background-color="var(--r-main-color)"  -->
 
-# A Humble Beginning
-
----
-
-# What Is This About?
+# 1️⃣ Distributing front end applications
 
 ---
 
@@ -98,6 +94,7 @@ Making it production-ready
 - This is relevant, as any solution we could think of could assume that everybody would be using React
 
 ---
+<!-- .slide: data-background-color="var(--r-main-color)"  -->
 
 # Facing a Challenge
 
@@ -107,28 +104,7 @@ Making it production-ready
 
 ---
 
-## Let's start with a question
-
----
-
-## How to distribute front end applications?
-
-???
-
-- What does this even mean? Bear with me for a bit
-- I just mentioned decoupled applications, so you can say: Distribute them individually
-
----
-
-<!-- .slide: data-background-image="images/decoupling.png" data-background-size="90% auto" -->
-
----
-
-## What about shared concerns?
-
-???
-
-- this makes even less sense than the question before. Let me show you a picture
+## Distributing shared concerns
 
 ---
 
@@ -190,24 +166,40 @@ Operability
 
 ---
 
-## A different paradigm
-
-### Independently deployed applications
-### Integrated as a cohesive whole
-
-???
-
-- clear ownership
-- the devil is in the details
+## Micro Frontends
 
 ---
 
-<!-- .slide: data-background-image="images/verticals.png" data-background-size="80% auto" -->
+## An architectural style where independently deliverable frontend applications are composed into a greater whole
+
+---
+
+<!-- .slide: data-background-image="images/microfrontends.png" data-background-size="80% auto" -->
 
 ???
 
-- another way to see it is focusing on vertical domains
-- a vertical domain split fits better the boundaries of the team I was on
+- the frontend is now a collection of different apps
+- Before being delivered to the end user, it is composed in *some way*
+- We'll talk about different ways later
+
+---
+
+<!-- .slide: data-background-image="images/sample-app.png" data-background-size="80% auto" -->
+
+---
+
+<h2 class="main">
+Our Objectives
+</h2>
+
+<h3 class="fragment fade-up">
+Quicker path to production
+</h3>
+
+<h3 class="fragment fade-up">
+Preserve autonomy
+</h3>
+
 
 ---
 
@@ -233,7 +225,7 @@ The one right way to do microfrontends - two opinions
 
 <!-- .slide: data-background-color="var(--r-main-color)"  -->
 
-# What is module federation?
+# 2️⃣ What is module federation?
 
 ???
 
@@ -241,13 +233,13 @@ The one right way to do microfrontends - two opinions
 
 ---
 
-## Load modules remotely at runtime
+## New feature in Webpack 5
+
+<span class="bottom-right"><a href="https://webpack.js.org/concepts/module-federation/">webpack.js.org/concepts/module-federation/</a></span>
 
 ---
 
-## New in Webpack 5
-
-<span class="bottom-right"><a href="https://webpack.js.org/concepts/module-federation/">webpack.js.org/concepts/module-federation/</a></span>
+## Load modules remotely at _runtime_
 
 ---
 
@@ -508,7 +500,6 @@ const WelcomeFrame = () => {
 ???
 
 - The Context API works well in combination with smaller, remote applications
-- I would 
 
 ---
 
@@ -549,7 +540,7 @@ X-Cutting concerns
 
 <!-- .slide: data-background-color="var(--r-main-color)"  -->
 
-# Production Ready
+# 3️⃣ Production Ready
 
 ---
 
@@ -656,9 +647,7 @@ context('Integrated Application', () => {
 
 ---
 
-## A micro frontend is a live application
-
-<h3 class="fragment fade-up danger">
+<h3 class="danger">
 A micro frontend is a live application
 </h3>
 
